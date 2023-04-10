@@ -3,9 +3,21 @@ var express = require('express');
 var path = require('path');
 var cookieParser = require('cookie-parser');
 var logger = require('morgan');
+var passport = require('passport');
 
-var indexRouter = require('./routes/index');
-var usersRouter = require('./routes/users');
+var indexRouter = require('./routes/indexRouter');
+var usersRouter = require('./routes/usersRouter');
+var dishRouter = require('./routes/dishesRouter');
+var restaurantRouter = require('./routes/restaurantsRouter');
+var cardRouter = require('./routes/cardsRouter');
+var favoriteRouter = require('./routes/favoritesRouter');
+var bayRecRouter = require('./routes/bayRecsRouter');
+var saleRecRouter = require('./routes/saleRecsRouter');
+var uploadRouter = require('./routes/uploadsRouter');
+
+const config = require('./config')
+const mongoose = require('mongoose');
+const connect = mongoose.connect(config.mongoUrl);
 
 var app = express();
 
@@ -18,9 +30,17 @@ app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
 app.use(cookieParser());
 app.use(express.static(path.join(__dirname, 'public')));
+app.use(passport.initialize());
 
 app.use('/', indexRouter);
 app.use('/users', usersRouter);
+app.use('/dishes', dishRouter);
+app.use('/restaurants', restaurantRouter);
+app.use('/cards', cardRouter);
+app.use('/favorites', favoriteRouter);
+app.use('/bayRecs', bayRecRouter);
+app.use('/saleRecs', saleRecRouter);
+app.use('/uploads', uploadRouter);
 
 // catch 404 and forward to error handler
 app.use(function(req, res, next) {
