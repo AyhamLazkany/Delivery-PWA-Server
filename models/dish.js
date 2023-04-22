@@ -28,14 +28,12 @@ const dishSchema = new Schema({
    },
    description: {
       type: String,
-      required: true
+      default: ''
    },
    rate: {
       type: Number,
       default: 4
    }
-}, {
-   timestamps: true
 });
 
 var Dish = mongoose.model('dish', dishSchema);

@@ -1,6 +1,7 @@
 const express = require('express');
 const bodyParser = require('body-parser');
 const Dishes = require('../models/dish');
+const authenticate = require('../authenticate');
 const cors = require('./cors');
 
 const dishRouter = express.Router();
@@ -17,7 +18,7 @@ dishRouter.route('/')
         res.json(Dishes);
       }, (err) => next(err))
       .catch((err) => next(err));
-  }).post(cors.corsWithOptions, (req, res, next) => {
+  }).post(cors.corsWithOptions, authenticate.verifyUser, authenticate.verifyAdmin, (req, res, next) => {
     Dishes.create(req.body)
       .then((dish) => {
         res.statusCode = 200;
@@ -28,7 +29,7 @@ dishRouter.route('/')
   }).put(cors.corsWithOptions, (req, res, next) => {
     res.statusCode = 404;
     res.end('Put operation is not supported on \'/Dishes\'');
-  }).delete(cors.corsWithOptions, (req, res, next) => {
+  }).delete(cors.corsWithOptions, authenticate.verifyUser, authenticate.verifyAdmin, (req, res, next) => {
     Dishes.deleteMany(req.query)
       .then((delResult) => {
         res.statusCode = 200;
@@ -51,7 +52,7 @@ dishRouter.route('/:dishId')
   }).post(cors.corsWithOptions, (req, res, next) => {
     res.statusCode = 404;
     res.end('Post operation is not supported on \'/Dishes/' + req.params.dishId + '\'');
-  }).put(cors.corsWithOptions, (req, res, next) => {
+  }).put(cors.corsWithOptions, authenticate.verifyUser, authenticate.verifyAdmin, (req, res, next) => {
     Dishes.findByIdAndUpdate(req.params.dishId, { $set: req.body }, { new: true })
       .then((dish) => {
         res.statusCode = 200;
@@ -59,7 +60,7 @@ dishRouter.route('/:dishId')
         res.json(dish);
       }, (err) => next(err))
       .catch((err) => next(err));
-  }).delete(cors.corsWithOptions, (req, res, next) => {
+  }).delete(cors.corsWithOptions, authenticate.verifyUser, authenticate.verifyAdmin, (req, res, next) => {
     Dishes.findByIdAndRemove(req.params.dishId)
       .then((dish) => {
         res.statusCode = 200;
