@@ -2,6 +2,7 @@ const express = require('express');
 const bodyParser = require('body-parser');
 const Restaurants = require('../models/restaurant');
 const Dishes = require('../models/dish');
+const authenticate = require('../authenticate');
 const cors = require('./cors');
 
 const restaurantRouter = express.Router();
@@ -18,7 +19,7 @@ restaurantRouter.route('/')
         res.json(Restaurants);
       }, (err) => next(err))
       .catch((err) => next(err));
-  }).post(cors.corsWithOptions, (req, res, next) => {
+  }).post(cors.corsWithOptions, authenticate.verifyUser, authenticate.verifyAdmin, (req, res, next) => {
     Restaurants.create(req.body)
       .then((restaurant) => {
         res.statusCode = 200;
@@ -53,7 +54,7 @@ restaurantRouter.route('/:restaurantId')
   }).post(cors.corsWithOptions, (req, res, next) => {
     res.statusCode = 404;
     res.end('Post operation is not supported on \'/Restaurants/' + req.params.restaurantId + '\'');
-  }).put(cors.corsWithOptions, (req, res, next) => {
+  }).put(cors.corsWithOptions, authenticate.verifyUser, authenticate.verifyAdmin, (req, res, next) => {
     Restaurants.findByIdAndUpdate(req.params.restaurantId, { $set: req.body }, { new: true })
       .then((restaurant) => {
         res.statusCode = 200;
@@ -61,7 +62,7 @@ restaurantRouter.route('/:restaurantId')
         res.json(restaurant);
       }, (err) => next(err))
       .catch((err) => next(err));
-  }).delete(cors.corsWithOptions, (req, res, next) => {
+  }).delete(cors.corsWithOptions, authenticate.verifyUser, authenticate.verifyAdmin, (req, res, next) => {
     Restaurants.findByIdAndRemove(req.params.restaurantId)
       .then((restaurant) => {
         Dishes.deleteMany({ resId: restaurant._id })

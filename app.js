@@ -9,15 +9,21 @@ var indexRouter = require('./routes/indexRouter');
 var usersRouter = require('./routes/usersRouter');
 var dishRouter = require('./routes/dishesRouter');
 var restaurantRouter = require('./routes/restaurantsRouter');
+var categoriesRouter = require('./routes/categoriesRouter')
 var cardRouter = require('./routes/cardsRouter');
 var favoriteRouter = require('./routes/favoritesRouter');
 var bayRecRouter = require('./routes/bayRecsRouter');
 var saleRecRouter = require('./routes/saleRecsRouter');
 var uploadRouter = require('./routes/uploadsRouter');
+var imagesRouter = require('./routes/imagesRouter');
 
 const config = require('./config')
 const mongoose = require('mongoose');
 const connect = mongoose.connect(config.mongoUrl);
+
+connect.then((db) => {
+  console.log('Connected successfuly to server');
+},(err) => { console.log(err); });
 
 var app = express();
 
@@ -33,9 +39,11 @@ app.use(express.static(path.join(__dirname, 'public')));
 app.use(passport.initialize());
 
 app.use('/', indexRouter);
+app.use('/images', imagesRouter);
 app.use('/users', usersRouter);
 app.use('/dishes', dishRouter);
 app.use('/restaurants', restaurantRouter);
+app.use('/categories', categoriesRouter);
 app.use('/cards', cardRouter);
 app.use('/favorites', favoriteRouter);
 app.use('/bayRecs', bayRecRouter);

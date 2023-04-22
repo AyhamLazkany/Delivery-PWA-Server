@@ -1,38 +1,36 @@
 const express = require('express');
 const bodyParser = require('body-parser');
-const SaleRecs = require('../models/saleRec');
+const Categories = require('../models/category');
 const authenticate = require('../authenticate');
 const cors = require('./cors');
 
-const saleRecRouter = express.Router();
-saleRecRouter.use(bodyParser.json());
+const categoryRouter = express.Router();
+categoryRouter.use(bodyParser.json());
 
-/* GET SaleRecs listing. */
-saleRecRouter.route('/')
+/* GET Categories listing. */
+categoryRouter.route('/')
   .options(cors.corsWithOptions, (req, res, next) => { res.sendStatus = 200; })
-  .get(cors.corsWithOptions, authenticate.verifyUser, authenticate.verifyAdmin, (req, res, next) => {
-    SaleRecs.findOne(req.query)
-      .populate('orders.dishes')
-      .then((SaleRecs) => {
+  .get(cors.cors, (req, res, next) => {
+    Categories.find(req.query)
+      .then((Categories) => {
         res.statusCode = 200;
         res.setHeader('Content-type', 'application/json');
-        res.json(SaleRecs);
+        res.json(Categories);
       }, (err) => next(err))
       .catch((err) => next(err));
   }).post(cors.corsWithOptions, authenticate.verifyUser, authenticate.verifyAdmin, (req, res, next) => {
-    SaleRecs.create(req.body)
-      .then((saleRec) => {
-        saleRec.populate('dishes');
+    Categories.create(req.body)
+      .then((category) => {
         res.statusCode = 200;
         res.setHeader('Content-type', 'application/json');
-        res.json(saleRec);
+        res.json(category);
       }, (err) => next(err))
       .catch((err) => next(err));
   }).put(cors.corsWithOptions, (req, res, next) => {
     res.statusCode = 404;
-    res.end('Put operation is not supported on \'/SaleRecs\'');
+    res.end('Put operation is not supported on \'/Categories\'');
   }).delete(cors.corsWithOptions, authenticate.verifyUser, authenticate.verifyAdmin, (req, res, next) => {
-    SaleRecs.Many(req.query)
+    Categories.deleteMany(req.query)
       .then((delResult) => {
         res.statusCode = 200;
         res.setHeader('Content-type', 'application/json');
@@ -41,4 +39,4 @@ saleRecRouter.route('/')
       .catch((err) => next(err));
   });
 
-module.exports = saleRecRouter;
+module.exports = categoryRouter;

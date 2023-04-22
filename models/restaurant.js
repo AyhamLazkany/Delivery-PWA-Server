@@ -15,27 +15,34 @@ const resSchema = new Schema({
       required: true
    },
    categories: {
-      type: String,
+      type: [String],
       required: true
    },
    plugins: {
       type: [String],
-      default: []
+      required: false
    },
    phone: {
-      type: String,
-      required: true
+      type: [Number],
+      required: false
    },
    location: {
       type: String,
       required: true
-   },
-   description: {
+   }, 
+   openned: {
+      type: Boolean,
+      default: false,
+      required: true
+   }, 
+   closetime: {
+      type: String,
+      required: true
+   }, 
+   opentime: {
       type: String,
       required: true
    }
-}, {
-   timestamps: true
 });
 
 var Restaurant = mongoose.model('restaurant', resSchema);

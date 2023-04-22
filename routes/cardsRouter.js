@@ -1,6 +1,7 @@
 const express = require('express');
 const bodyParser = require('body-parser');
 const Cards = require('../models/card');
+const authenticate = require('../authenticate');
 const cors = require('./cors');
 
 const cardRouter = express.Router();
@@ -9,7 +10,7 @@ cardRouter.use(bodyParser.json());
 /* GET Cards listing. */
 cardRouter.route('/')
   .options(cors.corsWithOptions, (req, res, next) => { res.sendStatus = 200; })
-  .get(cors.cors, (req, res, next) => {
+  .get(cors.corsWithOptions, authenticate.verifyUser, (req, res, next) => {
     Cards.findOne(req.query)
       .populate('orders.dishes')
       .then((Cards) => {
@@ -18,7 +19,7 @@ cardRouter.route('/')
         res.json(Cards);
       }, (err) => next(err))
       .catch((err) => next(err));
-  }).post(cors.corsWithOptions, (req, res, next) => {
+  }).post(cors.corsWithOptions, authenticate.verifyUser, (req, res, next) => {
     Cards.create(req.body)
       .then((card) => {
         card.populate('dishes');
@@ -27,10 +28,10 @@ cardRouter.route('/')
         res.json(card);
       }, (err) => next(err))
       .catch((err) => next(err));
-  }).put(cors.corsWithOptions, (req, res, next) => {
+  }).put(cors.corsWithOptions, authenticate.verifyUser, (req, res, next) => {
     res.statusCode = 404;
     res.end('Put operation is not supported on \'/Cards\'');
-  }).delete(cors.corsWithOptions, (req, res, next) => {
+  }).delete(cors.corsWithOptions, authenticate.verifyUser, (req, res, next) => {
     Cards.Many(req.query)
       .then((delResult) => {
         res.statusCode = 200;

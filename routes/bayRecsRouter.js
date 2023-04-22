@@ -1,6 +1,7 @@
 const express = require('express');
 const bodyParser = require('body-parser');
 const BayRecs = require('../models/bayRec');
+const authenticate = require('../authenticate');
 const cors = require('./cors');
 
 const bayRecRouter = express.Router();
@@ -9,7 +10,7 @@ bayRecRouter.use(bodyParser.json());
 /* GET BayRecs listing. */
 bayRecRouter.route('/')
   .options(cors.corsWithOptions, (req, res, next) => { res.sendStatus = 200; })
-  .get(cors.cors, (req, res, next) => {
+  .get(cors.corsWithOptions, authenticate.verifyUser, (req, res, next) => {
     BayRecs.findOne(req.query)
       .populate('orders.dishes')
       .then((BayRecs) => {
@@ -18,7 +19,7 @@ bayRecRouter.route('/')
         res.json(BayRecs);
       }, (err) => next(err))
       .catch((err) => next(err));
-  }).post(cors.corsWithOptions, (req, res, next) => {
+  }).post(cors.corsWithOptions, authenticate.verifyUser, (req, res, next) => {
     BayRecs.create(req.body)
       .then((bayRec) => {
         bayRec.populate('dishes');
@@ -30,7 +31,7 @@ bayRecRouter.route('/')
   }).put(cors.corsWithOptions, (req, res, next) => {
     res.statusCode = 404;
     res.end('Put operation is not supported on \'/BayRecs\'');
-  }).delete(cors.corsWithOptions, (req, res, next) => {
+  }).delete(cors.corsWithOptions, authenticate.verifyUser, (req, res, next) => {
     BayRecs.Many(req.query)
       .then((delResult) => {
         res.statusCode = 200;
