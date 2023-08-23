@@ -10,12 +10,14 @@ var usersRouter = require('./routes/usersRouter');
 var dishRouter = require('./routes/dishesRouter');
 var restaurantRouter = require('./routes/restaurantsRouter');
 var categoriesRouter = require('./routes/categoriesRouter')
-var cardRouter = require('./routes/cardsRouter');
+var cartRouter = require('./routes/cartsRouter');
 var favoriteRouter = require('./routes/favoritesRouter');
-var bayRecRouter = require('./routes/bayRecsRouter');
-var saleRecRouter = require('./routes/saleRecsRouter');
+var bayRecordsRouter = require('./routes/bayRecordsRouter');
+var saleRecordsRouter = require('./routes/saleRecordsRouter');
+var initialOrderRouter = require('./routes/initialOrderRouter');
 var uploadRouter = require('./routes/uploadsRouter');
 var imagesRouter = require('./routes/imagesRouter');
+var basicInfoRouter = require('./routes/basicInfoRouter')
 
 const config = require('./config')
 const mongoose = require('mongoose');
@@ -44,11 +46,13 @@ app.use('/users', usersRouter);
 app.use('/dishes', dishRouter);
 app.use('/restaurants', restaurantRouter);
 app.use('/categories', categoriesRouter);
-app.use('/cards', cardRouter);
+app.use('/carts', cartRouter);
 app.use('/favorites', favoriteRouter);
-app.use('/bayRecs', bayRecRouter);
-app.use('/saleRecs', saleRecRouter);
+app.use('/bayRecords', bayRecordsRouter);
+app.use('/saleRecords', saleRecordsRouter);
+app.use('/initialOrder', initialOrderRouter);
 app.use('/uploads', uploadRouter);
+app.use('/basicInfo', basicInfoRouter)
 
 // catch 404 and forward to error handler
 app.use(function(req, res, next) {

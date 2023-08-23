@@ -70,4 +70,15 @@ dishRouter.route('/:dishId')
       .catch((err) => next(err));
   });
 
+dishRouter.route('/addcounter/:DishId')
+  .options(cors.corsWithOptions, (req, res, next) => { res.sendStatus = 200; })
+  .put(cors.corsWithOptions, authenticate.verifyUser, (req, res, next) => {
+    Dishes.findByIdAndUpdate(req.params.DishId, { $inc: { 'counter': 1 } }, { new: true })
+      .then(() => {
+        res.statusCode = 200;
+        res.setHeader('Content-type', 'application/json');
+      }, (err) => next(err))
+      .catch((err) => next(err));
+  });
+
 module.exports = dishRouter;

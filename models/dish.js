@@ -33,9 +33,10 @@ const dishSchema = new Schema({
    price: {
       type: Number,
       default: 0
-   },
-   rate: {
+   }, 
+   counter: {
       type: Number,
+      required: false,
       default: 0
    }
 });

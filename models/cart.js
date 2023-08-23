@@ -3,10 +3,14 @@ const Schema = mongoose.Schema;
 
 const orderSchema = new Schema({
    dish: {
-      type: [Schema.Types.ObjectId],
+      type: Schema.Types.ObjectId,
       ref: 'dish'
    },
    quantity: {
+      type: Number,
+      required: true
+   },
+   bill: {
       type: Number,
       required: true
    },
@@ -16,7 +20,7 @@ const orderSchema = new Schema({
    }
 });
 
-const cardSchema = new Schema({
+const cartSchema = new Schema({
    user: {
       type: String,
       required: true
@@ -29,5 +33,5 @@ const cardSchema = new Schema({
    timestamps: true
 });
 
-var Card = mongoose.model('card', cardSchema);
-module.exports = Card;
+var Cart = mongoose.model('cart', cartSchema);
+module.exports = Cart;

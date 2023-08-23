@@ -65,6 +65,13 @@ imageRouter.route('/categories/:imagename')
       deleteResponse(err, res);
    });
 });
+imageRouter.route('/labels/:imagename')
+.options(cors.corsWithOptions, (req, res, next) => { res.sendStatus = 200; })
+.delete(cors.corsWithOptions, authenticate.verifyUser, authenticate.verifyAdmin, (req, res, next) => {
+   fs.unlink('public/assets/img/labels/' + req.params.imagename, function (err) {
+      deleteResponse(err, res);
+   });
+});
 
 var deleteResponse = (err, res) => {
    if (err && err.code == 'ENOENT') {

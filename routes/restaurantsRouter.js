@@ -66,12 +66,24 @@ restaurantRouter.route('/:restaurantId')
     Restaurants.findByIdAndRemove(req.params.restaurantId)
       .then((restaurant) => {
         Dishes.deleteMany({ resId: restaurant._id })
-        res.statusCode = 200;
-        res.setHeader('Content-type', 'application/json');
-        res.json(restaurant);
+          .then(() => {
+            res.statusCode = 200;
+            res.setHeader('Content-type', 'application/json');
+            res.json(restaurant);
+          }, (err) => next(err));
       }, (err) => next(err))
       .catch((err) => next(err));
   });
 
+restaurantRouter.route('/addcounter/:restaurantId')
+  .options(cors.corsWithOptions, (req, res, next) => { res.sendStatus = 200; })
+  .put(cors.corsWithOptions, authenticate.verifyUser, (req, res, next) => {
+    Restaurants.findByIdAndUpdate(req.params.restaurantId, { $inc: { 'counter': 1 } }, { new: true })
+      .then(() => {
+        res.statusCode = 200;
+        res.setHeader('Content-type', 'application/json');
+      }, (err) => next(err))
+      .catch((err) => next(err));
+  });
 
 module.exports = restaurantRouter;

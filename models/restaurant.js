@@ -28,7 +28,7 @@ const resSchema = new Schema({
    },
    location: {
       type: String,
-      required: true
+      required: false
    }, 
    openned: {
       type: Boolean,
@@ -42,6 +42,11 @@ const resSchema = new Schema({
    opentime: {
       type: String,
       required: true
+   }, 
+   counter: {
+      type: Number,
+      required: false,
+      default: 0
    }
 });
 

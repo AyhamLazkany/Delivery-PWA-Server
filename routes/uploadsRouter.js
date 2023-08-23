@@ -44,6 +44,15 @@ const categoryStorage = multer.diskStorage({
       cb(null, file.originalname)
    },
 });
+const labelsStorage = multer.diskStorage({
+   destination: (req, file, cb) => {
+      cb(null, 'public/assets/img/labels');
+   },
+   filename: (req, file, cb) => {
+      cb(null, file.originalname)
+   },
+});
+
 const imageFileFilter = (req, file, cb) => {
    if (!file.originalname.match(/\.(jpg|jpeg|png|gif)$/)) {
       err = new Error('You can upload only image files!');
@@ -55,6 +64,7 @@ const uploadRestaurantImg = multer({ storage: restaurantStorage, fileFilter: ima
 const uploadDishImg = multer({ storage: dishStorage, fileFilter: imageFileFilter });
 const uploadsliderImg = multer({ storage: sliderStorage, fileFilter: imageFileFilter });
 const uploadcategoryImg = multer({ storage: categoryStorage, fileFilter: imageFileFilter });
+const uploadLabelImg = multer({ storage: labelsStorage, fileFilter: imageFileFilter });
 
 const uploadRouter = express.Router();
 uploadRouter.use(bodyParser.json());
@@ -125,6 +135,23 @@ uploadRouter.route('/categories')
    }).delete(cors.corsWithOptions, (req, res) => {
       res.statusCode = 404;
       res.end('DELETE operation is not supported on \'/uploads/categories\'');
+   });
+
+uploadRouter.route('/labels')
+   .options(cors.corsWithOptions, (req, res) => { res.sendStatus(200); })
+   .get(cors.corsWithOptions, (req, res) => {
+      res.statusCode = 404;
+      res.end('GET operation is not supported on \'/uploads/labels\'');
+   }).post(cors.corsWithOptions, authenticate.verifyUser, authenticate.verifyAdmin, uploadLabelImg.single('imageFile'), (req, res, next) => {
+      res.statusCode = 200;
+      res.setHeader('Content-type', 'application/json');
+      res.json(req.file);
+   }).put(cors.corsWithOptions, (req, res) => {
+      res.statusCode = 404;
+      res.end('PUT operation is not supported on \'/uploads/labels\'');
+   }).delete(cors.corsWithOptions, (req, res) => {
+      res.statusCode = 404;
+      res.end('DELETE operation is not supported on \'/uploads/labels\'');
    });
 
 module.exports = uploadRouter;

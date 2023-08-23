@@ -8,14 +8,14 @@ const favoriteSchema = new Schema({
    },
    dishes: {
       type: [Schema.Types.ObjectId],
-      ref: 'dish'
+      ref: 'dish',
+      default: []
    },
    restaurants: {
       type: [Schema.Types.ObjectId],
-      ref: 'restaurant'
+      ref: 'restaurant',
+      default: []
    }
-}, {
-   timestamps: true
 });
 
 var Favorite = mongoose.model('favorite', favoriteSchema);
